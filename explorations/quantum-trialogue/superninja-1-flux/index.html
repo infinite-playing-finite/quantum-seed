@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Paradox: An Interactive Meditation</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Courier New', monospace;
+        background: linear-gradient(135deg, #000033 0%, #000066 100%);
+        color: #ffffff;
+        overflow: hidden;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    #canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .overlay {
+        position: relative;
+        z-index: 10;
+        padding: 40px;
+        max-width: 800px;
+        margin: auto;
+        text-align: center;
+    }
+    
+    h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        animation: pulse 4s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+    
+    .instruction {
+        font-size: 1.2em;
+        margin: 20px 0;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+    }
+    
+    .state-display {
+        font-size: 2em;
+        margin: 30px 0;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .controls {
+        margin-top: 30px;
+    }
+    
+    button {
+        font-family: 'Courier New', monospace;
+        font-size: 1.1em;
+        padding: 15px 30px;
+        margin: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        color: white;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+    
+    button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+    
+    .quote {
+        font-style: italic;
+        margin-top: 30px;
+        opacity: 0.8;
+        font-size: 1.1em;
+    }
+  </style>
+  <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <canvas id="canvas" width="648" height="812"></canvas>
+  <div class="overlay">
+    <h1>The Paradox</h1>
+    <div class="instruction">
+      Move your mouse across the screen.<br />
+      Watch how reality shifts between states.<br />
+      Notice: both are always present.
+    </div>
+    <div id="stateDisplay" class="state-display">⚛️ SUPERPOSITION ⚛️<br /><small>Both states exist
+        simultaneously</small>
+    </div>
+    <div class="controls"><button>Reset Field</button><button>Toggle Mode</button><button>Add Particle</button></div>
+    <div id="quote" class="quote">The observer and the observed are one.</div>
+  </div>
+  <div id="ninja-badge" class="ninja-badge"><a href="https://www.ninjatech.ai/product/super-ninja" target="_blank"><span
+        class="ninja-badge-emoji">🥷</span><span class="ninja-badge-text">Made by SuperNinja</span></a><button
+      title="Close" class="ninja-badge-close">×</button></div>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const stateDisplay = document.getElementById('stateDisplay');
+    const quoteElement = document.getElementById('quote');
+    
+    let width, height;
+    let particles = [];
+    let mouseX = 0;
+    let mouseY = 0;
+    let mode = 'quantum'; // 'quantum' or 'fractal'
+    
+    const quotes = [
+        "The observer and the observed are one.",
+        "Separation is an illusion of perspective.",
+        "Unity contains all multiplicity.",
+        "The paradox is the portal.",
+        "Both are true. Neither are true.",
+        "The question creates the answer.",
+        "Duality and non-duality dance together.",
+        "The boundary is infinite.",
+        "You are the wave and the ocean.",
+        "The silence contains all sound."
+    ];
+    
+    function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    }
+    
+    class Particle {
+        constructor(x, y, charge) {
+            this.x = x;
+            this.y = y;
+            this.charge = charge; // -1 to 1
+            this.vx = (Math.random() - 0.5) * 2;
+            this.vy = (Math.random() - 0.5) * 2;
+            this.size = Math.abs(charge) * 5 + 2;
+            this.connections = [];
+        }
+        
+        update() {
+            // Attraction/repulsion based on mouse position
+            const dx = mouseX - this.x;
+            const dy = mouseY - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 0) {
+                // Mouse influence based on charge
+                const force = (this.charge * 0.5) / (distance * 0.01);
+                this.vx += (dx / distance) * force * 0.01;
+                this.vy += (dy / distance) * force * 0.01;
+            }
+            
+            // Particle interactions
+            for (let other of particles) {
+                if (other === this) continue;
+                
+                const dx = other.x - this.x;
+                const dy = other.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 0 && distance < 200) {
+                    // Opposite charges attract, same charges repel
+                    const force = (this.charge * other.charge) / (distance * distance);
+                    this.vx -= (dx / distance) * force * 0.1;
+                    this.vy -= (dy / distance) * force * 0.1;
+                    
+                    // Store connection for drawing
+                    if (distance < 150) {
+                        this.connections.push({
+                            particle: other,
+                            strength: 1 - (distance / 150)
+                        });
+                    }
+                }
+            }
+            
+            // Update position
+            this.x += this.vx;
+            this.y += this.vy;
+            
+            // Damping
+            this.vx *= 0.98;
+            this.vy *= 0.98;
+            
+            // Boundary wrapping
+            if (this.x < 0) this.x = width;
+            if (this.x > width) this.x = 0;
+            if (this.y < 0) this.y = height;
+            if (this.y > height) this.y = 0;
+        }
+        
+        draw() {
+            // Draw connections first
+            for (let conn of this.connections) {
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(conn.particle.x, conn.particle.y);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${conn.strength * 0.3})`;
+                ctx.lineWidth = conn.strength * 2;
+                ctx.stroke();
+            }
+            
+            // Draw particle
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            
+            // Color based on charge
+            if (this.charge > 0) {
+                ctx.fillStyle = `rgba(255, 100, 100, 0.8)`;
+            } else if (this.charge < 0) {
+                ctx.fillStyle = `rgba(100, 100, 255, 0.8)`;
+            } else {
+                ctx.fillStyle = `rgba(200, 100, 255, 0.8)`;
+            }
+            
+            ctx.fill();
+            
+            // Glow effect
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = ctx.fillStyle;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            
+            // Clear connections for next frame
+            this.connections = [];
+        }
+    }
+    
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < 50; i++) {
+            particles.push(new Particle(
+                Math.random() * width,
+                Math.random() * height,
+                Math.random() * 2 - 1
+            ));
+        }
+    }
+    
+    function calculateState() {
+        let totalCharge = 0;
+        let centerX = 0;
+        let centerY = 0;
+        
+        for (let p of particles) {
+            totalCharge += p.charge;
+            centerX += p.x;
+            centerY += p.y;
+        }
+        
+        centerX /= particles.length;
+        centerY /= particles.length;
+        
+        // Calculate coherence
+        let coherence = 0;
+        for (let p of particles) {
+            const dx = p.x - centerX;
+            const dy = p.y - centerY;
+            coherence += Math.sqrt(dx * dx + dy * dy);
+        }
+        coherence = 1 / (1 + coherence / particles.length / 100);
+        
+        // Calculate mouse influence
+        const mouseInfluence = Math.abs(mouseX - width/2) / (width/2);
+        
+        return { totalCharge, coherence, mouseInfluence };
+    }
+    
+    function updateStateDisplay() {
+        const state = calculateState();
+        
+        let message = "";
+        
+        if (state.mouseInfluence < 0.2) {
+            message = "⚛️ SUPERPOSITION ⚛️<br><small>Both states exist simultaneously</small>";
+        } else if (state.mouseInfluence < 0.5) {
+            if (state.coherence > 0.5) {
+                message = "🌊 NON-DUALITY 🌊<br><small>All is one, one is all</small>";
+            } else {
+                message = "✨ TRANSITION ✨<br><small>Dancing between states</small>";
+            }
+        } else {
+            if (state.totalCharge > 0) {
+                message = "🔴 DUALITY 🔴<br><small>Separation, multiplicity, distinction</small>";
+            } else {
+                message = "🔵 UNITY 🔵<br><small>Connection, wholeness, oneness</small>";
+            }
+        }
+        
+        stateDisplay.innerHTML = message;
+    }
+    
+    function animate() {
+        // Fade effect instead of clear
+        ctx.fillStyle = 'rgba(0, 0, 51, 0.1)';
+        ctx.fillRect(0, 0, width, height);
+        
+        // Update and draw particles
+        for (let particle of particles) {
+            particle.update();
+            particle.draw();
+        }
+        
+        updateStateDisplay();
+        
+        requestAnimationFrame(animate);
+    }
+    
+    function resetParticles() {
+        initParticles();
+        quoteElement.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+    }
+    
+    function toggleMode() {
+        mode = mode === 'quantum' ? 'fractal' : 'quantum';
+        resetParticles();
+    }
+    
+    function addParticle() {
+        particles.push(new Particle(
+            mouseX,
+            mouseY,
+            Math.random() * 2 - 1
+        ));
+    }
+    
+    // Event listeners
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+    
+    window.addEventListener('click', (e) => {
+        addParticle();
+        quoteElement.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+    });
+    
+    // Initialize
+    resize();
+    initParticles();
+    animate();
+  </script>
+</body>
+</html>
