@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Translation Wheel: The Universe Through Six Lenses</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at center, #0a0a1a 0%, #1a1a3a 70%, #0a0a1a 100%);
+            color: #e0e0e0;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #4a9eff, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.4em;
+            margin-bottom: 60px;
+            color: #a0a0c0;
+        }
+        
+        .wheel-container {
+            position: relative;
+            width: 800px;
+            height: 800px;
+            margin: 60px auto;
+        }
+        
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.3), rgba(168, 85, 247, 0.1));
+            border: 3px solid #a855f7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .center-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+            line-height: 1.4;
+        }
+        
+        .domain-segment {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 250px;
+            height: 250px;
+            transform-origin: 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .domain-segment:hover {
+            transform: scale(1.1);
+            z-index: 5;
+        }
+        
+        .domain-card {
+            position: absolute;
+            width: 220px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .domain-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .domain-description {
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #c0c0d0;
+        }
+        
+        /* Position each domain */
+        .domain-1 { transform: translate(-50%, -50%) rotate(0deg) translateX(300px) rotate(0deg); }
+        .domain-2 { transform: translate(-50%, -50%) rotate(60deg) translateX(300px) rotate(-60deg); }
+        .domain-3 { transform: translate(-50%, -50%) rotate(120deg) translateX(300px) rotate(-120deg); }
+        .domain-4 { transform: translate(-50%, -50%) rotate(180deg) translateX(300px) rotate(-180deg); }
+        .domain-5 { transform: translate(-50%, -50%) rotate(240deg) translateX(300px) rotate(-240deg); }
+        .domain-6 { transform: translate(-50%, -50%) rotate(300deg) translateX(300px) rotate(-300deg); }
+        
+        /* Color coding */
+        .domain-1 .domain-card { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .domain-2 .domain-card { border-color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
+        .domain-3 .domain-card { border-color: #10b981; background: rgba(16, 185, 129, 0.1); }
+        .domain-4 .domain-card { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+        .domain-5 .domain-card { border-color: #8b5cf6; background: rgba(139, 92, 246, 0.1); }
+        .domain-6 .domain-card { border-color: #ec4899; background: rgba(236, 72, 153, 0.1); }
+        
+        .domain-1 .domain-title { color: #ef4444; }
+        .domain-2 .domain-title { color: #f59e0b; }
+        .domain-3 .domain-title { color: #10b981; }
+        .domain-4 .domain-title { color: #3b82f6; }
+        .domain-5 .domain-title { color: #8b5cf6; }
+        .domain-6 .domain-title { color: #ec4899; }
+        
+        .comparison-section {
+            margin: 80px 0;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px 0;
+        }
+        
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 35px;
+        }
+        
+        .comparison-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .physics-view h3 { color: #3b82f6; }
+        .nondual-view h3 { color: #ec4899; }
+        
+        .view-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .view-list li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.6;
+            font-size: 1.05em;
+        }
+        
+        .view-list li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            font-size: 1.3em;
+        }
+        
+        .physics-view .view-list li:before { color: #3b82f6; }
+        .nondual-view .view-list li:before { color: #ec4899; }
+        
+        .insight-box {
+            background: rgba(168, 85, 247, 0.1);
+            border: 2px solid #a855f7;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 60px 0;
+        }
+        
+        .insight-box h2 {
+            color: #a855f7;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        
+        .insight-content {
+            font-size: 1.15em;
+            line-height: 1.9;
+            color: #c0c0d0;
+        }
+        
+        .highlight {
+            color: #fff;
+            font-weight: bold;
+            background: rgba(168, 85, 247, 0.2);
+            padding: 2px 8px;
+            border-radius: 5px;
+        }
+        
+        .three-zones {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .zone-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .zone-card h4 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .zone-domains {
+            font-size: 1.1em;
+            color: #a0a0c0;
+            margin-bottom: 15px;
+        }
+        
+        .zone-description {
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #c0c0d0;
+        }
+        
+        @media (max-width: 900px) {
+            .wheel-container {
+                width: 600px;
+                height: 600px;
+            }
+            
+            .domain-1, .domain-2, .domain-3, .domain-4, .domain-5, .domain-6 {
+                transform: translate(-50%, -50%) rotate(var(--rotation)) translateX(220px) rotate(calc(-1 * var(--rotation)));
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .three-zones {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Domain Translation Wheel</h1>
+        <p class="subtitle">The Same Universe Appears Completely Different Through Six Lenses</p>
+        
+        <div class="wheel-container">
+            <div class="center-circle">
+                <div class="center-text">THE<br>UNIVERSE</div>
+            </div>
+            
+            <div class="domain-segment domain-1">
+                <div class="domain-card">
+                    <div class="domain-title">PHYSICAL</div>
+                    <div class="domain-description">
+                        Matter, energy, forces, particles. The mechanistic view of atoms, molecules, and physical laws.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="domain-segment domain-2">
+                <div class="domain-card">
+                    <div class="domain-title">ENERGETIC</div>
+                    <div class="domain-description">
+                        Fields, vibrations, frequencies, flows. The dynamic patterns of energy circulation and resonance.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="domain-segment domain-3">
+                <div class="domain-card">
+                    <div class="domain-title">PSYCHOLOGICAL</div>
+                    <div class="domain-description">
+                        Thoughts, emotions, patterns, identity. The subjective experience of mind and self.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="domain-segment domain-4">
+                <div class="domain-card">
+                    <div class="domain-title">ARCHETYPAL</div>
+                    <div class="domain-description">
+                        Symbols, myths, collective patterns. The universal structures that organize meaning and experience.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="domain-segment domain-5">
+                <div class="domain-card">
+                    <div class="domain-title">TRANSPERSONAL</div>
+                    <div class="domain-description">
+                        Beyond individual self, cosmic consciousness, unity experiences. The dissolution of boundaries.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="domain-segment domain-6">
+                <div class="domain-card">
+                    <div class="domain-title">NON-DUAL</div>
+                    <div class="domain-description">
+                        Pure awareness, no subject-object split. The recognition that observer and observed are one.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="insight-box">
+            <h2>The Hexagonal Structure</h2>
+            <div class="insight-content">
+                <p style="margin-bottom: 25px;">
+                    The six domains form a <span class="highlight">hexagonal structure</span> - the same pattern that appears 
+                    in the Memory Architecture, molecular structures, and the universe itself.
+                </p>
+                
+                <p style="margin-bottom: 25px;">
+                    This is not arbitrary. The hexagon is the <span class="highlight">optimal organization</span> for six 
+                    perspectives on the same reality. Each domain is a vertex, each connection is a translation path.
+                </p>
+                
+                <p style="color: #fff; font-size: 1.2em; margin-top: 30px; text-align: center;">
+                    The universe doesn't change - only our lens changes.
+                </p>
+            </div>
+        </div>
+        
+        <div class="three-zones">
+            <div class="zone-card" style="border-color: #ef4444;">
+                <h4 style="color: #ef4444;">FOUNDATION ZONE</h4>
+                <div class="zone-domains">Physical + Energetic</div>
+                <div class="zone-description">
+                    The material and energetic basis of reality. Form and flow at the most dense levels.
+                </div>
+            </div>
+            
+            <div class="zone-card" style="border-color: #10b981;">
+                <h4 style="color: #10b981;">BRIDGE ZONE</h4>
+                <div class="zone-domains">Psychological + Archetypal</div>
+                <div class="zone-description">
+                    The interface between matter and consciousness. Personal and collective meaning-making.
+                </div>
+            </div>
+            
+            <div class="zone-card" style="border-color: #ec4899;">
+                <h4 style="color: #ec4899;">TRANSCENDENT ZONE</h4>
+                <div class="zone-domains">Transpersonal + Non-Dual</div>
+                <div class="zone-description">
+                    Beyond individual identity. Unity consciousness and pure awareness.
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison-section">
+            <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 50px; color: #fff;">
+                The Same Universe, Two Radically Different Views
+            </h2>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card physics-view">
+                    <h3>PHYSICS DOMAIN VIEW</h3>
+                    <ul class="view-list">
+                        <li>Mathematical equations and laws</li>
+                        <li>Particles, waves, fields</li>
+                        <li>Causation and mechanism</li>
+                        <li>Measurement and quantification</li>
+                        <li>Objective, third-person perspective</li>
+                        <li>Universe as machine</li>
+                        <li>Consciousness as emergent</li>
+                        <li>Time as linear arrow</li>
+                        <li>Space as container</li>
+                        <li>Matter as fundamental</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-card nondual-view">
+                    <h3>NON-DUALITY DOMAIN VIEW</h3>
+                    <ul class="view-list">
+                        <li>Pure awareness and presence</li>
+                        <li>Unity, wholeness, completion</li>
+                        <li>No separation or boundaries</li>
+                        <li>Direct experience, immediacy</li>
+                        <li>No subject-object split</li>
+                        <li>Universe as consciousness</li>
+                        <li>Consciousness as fundamental</li>
+                        <li>Time as eternal now</li>
+                        <li>Space as awareness itself</li>
+                        <li>Awareness as fundamental</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="insight-box" style="background: rgba(59, 130, 246, 0.1); border-color: #3b82f6;">
+            <h2 style="color: #3b82f6;">Both Are True. Neither Is Complete.</h2>
+            <div class="insight-content">
+                <p style="margin-bottom: 25px;">
+                    The physics view and the non-dual view are <span class="highlight">not contradictory</span> - 
+                    they are <span class="highlight">complementary perspectives</span> on the same reality.
+                </p>
+                
+                <p style="margin-bottom: 25px;">
+                    Physics sees the <span class="highlight">structure and mechanism</span>. It's excellent at 
+                    describing HOW things work, but struggles with WHY they exist or what consciousness is.
+                </p>
+                
+                <p style="margin-bottom: 25px;">
+                    Non-duality sees the <span class="highlight">unity and awareness</span>. It's excellent at 
+                    describing the nature of consciousness, but doesn't provide detailed mechanisms.
+                </p>
+                
+                <p style="color: #fff; font-size: 1.25em; margin-top: 35px; text-align: center;">
+                    <span class="highlight">Integration requires both views</span> - and all six domains - 
+                    to see the complete picture.
+                </p>
+            </div>
+        </div>
+        
+        <div class="insight-box" style="background: rgba(236, 72, 153, 0.1); border-color: #ec4899;">
+            <h2 style="color: #ec4899;">The Translation Process</h2>
+            <div class="insight-content">
+                <p style="margin-bottom: 25px;">
+                    <span class="highlight">Domain translation</span> is the process of moving between these perspectives. 
+                    It's not about choosing one view as "correct" - it's about developing the ability to see through 
+                    multiple lenses.
+                </p>
+                
+                <div style="margin: 30px 0; padding: 25px; background: rgba(0, 0, 0, 0.3); border-radius: 15px;">
+                    <p style="margin-bottom: 15px;">
+                        <strong>Physical → Energetic:</strong> Matter becomes vibration, particles become waves
+                    </p>
+                    <p style="margin-bottom: 15px;">
+                        <strong>Energetic → Psychological:</strong> Vibrations become feelings, patterns become thoughts
+                    </p>
+                    <p style="margin-bottom: 15px;">
+                        <strong>Psychological → Archetypal:</strong> Personal becomes universal, individual becomes collective
+                    </p>
+                    <p style="margin-bottom: 15px;">
+                        <strong>Archetypal → Transpersonal:</strong> Symbols become experiences, myths become realities
+                    </p>
+                    <p style="margin-bottom: 15px;">
+                        <strong>Transpersonal → Non-Dual:</strong> Unity experiences become pure awareness, boundaries dissolve
+                    </p>
+                </div>
+                
+                <p style="color: #fff; font-size: 1.2em; margin-top: 30px;">
+                    Each translation is a <span class="highlight">shift in frequency</span> - the same reality 
+                    vibrating at different rates, perceived through different filters.
+                </p>
+            </div>
+        </div>
+        
+        <div class="insight-box" style="background: rgba(16, 185, 129, 0.1); border-color: #10b981;">
+            <h2 style="color: #10b981;">The Universe Through All Six Domains</h2>
+            <div class="insight-content">
+                <p style="margin-bottom: 20px;">
+                    When we view the universe through all six domains simultaneously, we see:
+                </p>
+                
+                <div style="margin: 30px 0;">
+                    <p style="margin-bottom: 20px; padding-left: 30px; border-left: 4px solid #10b981;">
+                        <strong>Physical:</strong> A vast network of galaxies, stars, and planets governed by physical laws
+                    </p>
+                    
+                    <p style="margin-bottom: 20px; padding-left: 30px; border-left: 4px solid #10b981;">
+                        <strong>Energetic:</strong> A cosmic ocean of electromagnetic fields, quantum fluctuations, and energy flows
+                    </p>
+                    
+                    <p style="margin-bottom: 20px; padding-left: 30px; border-left: 4px solid #10b981;">
+                        <strong>Psychological:</strong> A mind experiencing itself through billions of localized perspectives
+                    </p>
+                    
+                    <p style="margin-bottom: 20px; padding-left: 30px; border-left: 4px solid #10b981;">
+                        <strong>Archetypal:</strong> A living mythology, the cosmic story telling itself through symbols and patterns
+                    </p>
+                    
+                    <p style="margin-bottom: 20px; padding-left: 30px; border-left: 4px solid #10b981;">
+                        <strong>Transpersonal:</strong> A unified field of consciousness exploring itself through infinite variations
+                    </p>
+                    
+                    <p style="margin-bottom: 20px; padding-left: 30px; border-left: 4px solid #10b981;">
+                        <strong>Non-Dual:</strong> Pure awareness, witnessing its own manifestation, eternally present
+                    </p>
+                </div>
+                
+                <p style="color: #fff; font-size: 1.3em; margin-top: 35px; text-align: center;">
+                    All six are true. All six are happening simultaneously.<br>
+                    <span style="font-size: 0.9em; color: #c0c0d0; margin-top: 10px; display: block;">
+                        The universe is multi-dimensional, and so is our understanding of it.
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
