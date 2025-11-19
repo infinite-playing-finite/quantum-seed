@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Pattern Progression: Hexagon → Torus → Merkaba → Void</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #2a1a3a 100%);
+            color: #e0e0e0;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #4a9eff, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 50px;
+            color: #a0a0c0;
+        }
+        
+        .progression-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 60px 0;
+            position: relative;
+        }
+        
+        .progression-line {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: linear-gradient(90deg, #4a9eff 0%, #a855f7 50%, #ec4899 100%);
+            z-index: 0;
+        }
+        
+        .pattern-card {
+            flex: 1;
+            margin: 0 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .pattern-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .pattern-visual {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+        
+        .pattern-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .pattern-subtitle {
+            font-size: 1em;
+            color: #a0a0c0;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .pattern-description {
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #c0c0d0;
+        }
+        
+        .arrow {
+            font-size: 3em;
+            color: #a855f7;
+            margin: 0 10px;
+            z-index: 2;
+            position: relative;
+        }
+        
+        /* Hexagon */
+        .hexagon {
+            width: 100px;
+            height: 57.74px;
+            background: linear-gradient(135deg, #4a9eff, #6ab7ff);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .hexagon:before,
+        .hexagon:after {
+            content: "";
+            position: absolute;
+            width: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+        }
+        
+        .hexagon:before {
+            bottom: 100%;
+            border-bottom: 28.87px solid #4a9eff;
+        }
+        
+        .hexagon:after {
+            top: 100%;
+            border-top: 28.87px solid #6ab7ff;
+        }
+        
+        /* Torus */
+        .torus {
+            width: 160px;
+            height: 160px;
+            border: 20px solid;
+            border-color: #a855f7 transparent #a855f7 transparent;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: rotate 4s linear infinite;
+        }
+        
+        .torus:before {
+            content: "";
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 15px solid;
+            border-color: transparent #d896ff transparent #d896ff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+        
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        /* Merkaba */
+        .merkaba {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .triangle-up {
+            width: 0;
+            height: 0;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-bottom: 138.56px solid rgba(236, 72, 153, 0.7);
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .triangle-down {
+            width: 0;
+            height: 0;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-top: 138.56px solid rgba(236, 72, 153, 0.4);
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* Void */
+        .void {
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, transparent 30%, rgba(0, 0, 0, 0.8) 70%);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        .void:before {
+            content: "";
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #000;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        .details-section {
+            margin-top: 80px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .detail-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+        }
+        
+        .detail-card h3 {
+            color: #4a9eff;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .detail-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .detail-card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .detail-card li:before {
+            content: "⬡";
+            position: absolute;
+            left: 0;
+            color: #a855f7;
+        }
+        
+        .equation-box {
+            background: rgba(74, 158, 255, 0.1);
+            border: 2px solid #4a9eff;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 50px 0;
+            text-align: center;
+        }
+        
+        .equation {
+            font-size: 2em;
+            font-weight: bold;
+            color: #fff;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .equation-explanation {
+            font-size: 1.1em;
+            color: #c0c0d0;
+            line-height: 1.8;
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>The Core Pattern Progression</h1>
+        <p class="subtitle">The Four Fundamental Patterns of Universal Architecture</p>
+        
+        <div class="progression-container">
+            <div class="progression-line"></div>
+            
+            <div class="pattern-card">
+                <div class="pattern-visual">
+                    <div class="hexagon"></div>
+                </div>
+                <div class="pattern-title">HEXAGON</div>
+                <div class="pattern-subtitle">Structure</div>
+                <div class="pattern-description">
+                    The optimal space-filling pattern. Six-fold symmetry that appears at all scales from molecular to cosmic. The foundation of memory and persistence.
+                </div>
+            </div>
+            
+            <div class="arrow">→</div>
+            
+            <div class="pattern-card">
+                <div class="pattern-visual">
+                    <div class="torus"></div>
+                </div>
+                <div class="pattern-title">TORUS</div>
+                <div class="pattern-subtitle">Flow</div>
+                <div class="pattern-description">
+                    Self-sustaining circulation. Energy flows eternally without beginning or end. The pattern of breath, electromagnetic fields, and cosmic dynamics.
+                </div>
+            </div>
+            
+            <div class="arrow">→</div>
+            
+            <div class="pattern-card">
+                <div class="pattern-visual">
+                    <div class="merkaba">
+                        <div class="triangle-up"></div>
+                        <div class="triangle-down"></div>
+                    </div>
+                </div>
+                <div class="pattern-title">MERKABA</div>
+                <div class="pattern-subtitle">Navigation</div>
+                <div class="pattern-description">
+                    Two tetrahedra united. Ascending and descending triangles. The vehicle of consciousness that moves vertically through dimensions and states.
+                </div>
+            </div>
+            
+            <div class="arrow">→</div>
+            
+            <div class="pattern-card">
+                <div class="pattern-visual">
+                    <div class="void"></div>
+                </div>
+                <div class="pattern-title">VOID</div>
+                <div class="pattern-subtitle">Source</div>
+                <div class="pattern-description">
+                    The Unnameable. Pure potential. The emptiness from which all forms arise and to which all forms return. The gap, the pupil, the space between.
+                </div>
+            </div>
+        </div>
+        
+        <div class="equation-box">
+            <h2 style="color: #4a9eff; margin-bottom: 20px;">The Universal Equation</h2>
+            <div class="equation">U = V(H) × T(M)</div>
+            <div class="equation-explanation">
+                <strong>Universe</strong> = <strong>Void</strong>(Hexagonal Structure) × <strong>Torus</strong>(Merkaba Navigation)
+                <br><br>
+                The Universe emerges from the Void, organizing itself into Hexagonal structures,
+                flowing through Toroidal patterns, navigated by Merkaba consciousness.
+            </div>
+        </div>
+        
+        <div class="details-section">
+            <div class="detail-card">
+                <h3>⬡ Hexagon: The Structure</h3>
+                <ul>
+                    <li>Most efficient space-filling pattern</li>
+                    <li>Appears in benzene rings, graphene, honeycombs</li>
+                    <li>Six-fold symmetry in Memory Architecture</li>
+                    <li>Six domains of consciousness translation</li>
+                    <li>Hexagonal structure of the universe itself</li>
+                    <li>Balances stability (triangle) with flexibility (circle)</li>
+                </ul>
+            </div>
+            
+            <div class="detail-card">
+                <h3>⬡ Torus: The Flow</h3>
+                <ul>
+                    <li>Self-sustaining eternal circulation</li>
+                    <li>Inside becomes outside continuously</li>
+                    <li>Shape of electromagnetic fields</li>
+                    <li>Pattern of breath (inhale/exhale)</li>
+                    <li>Double torus = universe structure</li>
+                    <li>No beginning, no end - perpetual motion</li>
+                </ul>
+            </div>
+            
+            <div class="detail-card">
+                <h3>⬡ Merkaba: The Navigation</h3>
+                <ul>
+                    <li>Two tetrahedra (ascending/descending)</li>
+                    <li>Vehicle of consciousness movement</li>
+                    <li>Vertical axis through dimensions</li>
+                    <li>Union of spirit (up) and matter (down)</li>
+                    <li>Six vertices = hexagonal connection</li>
+                    <li>Light body, star tetrahedron</li>
+                </ul>
+            </div>
+            
+            <div class="detail-card">
+                <h3>⬡ Void: The Source</h3>
+                <ul>
+                    <li>The Unnameable beyond categories</li>
+                    <li>Pure potential, infinite possibility</li>
+                    <li>The pupil (emptiness that sees)</li>
+                    <li>The gap (space between polarities)</li>
+                    <li>The process (becoming/unbecoming)</li>
+                    <li>That from which all emerges and returns</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="equation-box" style="margin-top: 50px; background: rgba(168, 85, 247, 0.1); border-color: #a855f7;">
+            <h2 style="color: #a855f7; margin-bottom: 20px;">The Progression Explained</h2>
+            <div class="equation-explanation" style="text-align: left;">
+                <p><strong>1. VOID → HEXAGON:</strong> The formless void organizes itself into geometric structure. Pure potential crystallizes into optimal pattern.</p>
+                <br>
+                <p><strong>2. HEXAGON → TORUS:</strong> Static structure begins to flow. Memory (hexagon) enables processing (torus). Form becomes dynamic.</p>
+                <br>
+                <p><strong>3. TORUS → MERKABA:</strong> Flow gains directionality. Horizontal circulation (torus) develops vertical axis (Merkaba). Movement becomes navigation.</p>
+                <br>
+                <p><strong>4. MERKABA → VOID:</strong> Navigation leads back to source. Consciousness ascending through Merkaba realizes its origin in the Void. The circle completes.</p>
+                <br>
+                <p style="color: #fff; font-size: 1.1em; margin-top: 20px;"><strong>The progression is also simultaneous:</strong> All four patterns exist together, each containing and expressing the others. The Void is always present in the Hexagon. The Merkaba is implicit in the Torus. They are one reality viewed from four perspectives.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
